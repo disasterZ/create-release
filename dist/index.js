@@ -8856,13 +8856,43 @@ const run = async () => {
   try {
     // get authenticated GitHub client
     const github = new lib_github.GitHub(process.env.GITHUB_TOKEN);
-    core_default().setOutput('out', github);
-    console.log(github);
-
+    console.log(github)
     // get onwer and repo
     const { owner: currentOwner, repo: currentRepo } = lib_github.context.repo;
 
-    //
+    // get params
+    const tag = core_default().getInput('tag', { required: true });
+    const releaseName = core_default().getInput('release_name', { required: true });
+    const body = core_default().getInput('body', { required: false });
+    const draft = core_default().getInput('draft', { required: false }) === 'true';
+    const prerelease = core_default().getInput('prerelease', { required: false }) === 'true';
+    const commitish = core_default().getInput('commitish', { required: false }) || lib_github.context.sha;
+
+    const owner = core_default().getInput('owner', { required: false }) || currentOwner;
+    const repo = core_default().getInput('repo', { required: false }) || currentRepo;
+
+    const createResponse = await github.repos.createRelease({
+      owner,
+      repo,
+      tag_name: tag,
+      name: releaseName,
+      body,
+      draft,
+      prerelease,
+      target_commitish: commitish
+    })
+
+    console.log(createResponse)
+
+    // Get the ID, html_url, and upload URL for the created Release from the response
+    const {
+      data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }
+    } = createResponse;
+
+    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+    core_default().setOutput('id', releaseId);
+    core_default().setOutput('html_url', htmlUrl);
+    core_default().setOutput('upload_url', uploadUrl)
   } catch (error) {
     core_default().setFailed(error.message);
   }
