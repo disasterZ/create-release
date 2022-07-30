@@ -1,2 +1,10 @@
-# name: 'Create a release'
-# description: 
+name: 'Create a release'
+description: 'Create release by auto'
+author: 'DisasterZ'
+# inputs:
+outputs:
+  outP:
+    description: 'test'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
