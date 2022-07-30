@@ -5,6 +5,8 @@ author: 'DisasterZ'
 outputs:
   outP:
     description: 'test'
+  out1:
+    description: 'out'
 runs:
   using: 'node16'
   main: 'dist/index.js'

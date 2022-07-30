@@ -7,6 +7,7 @@ const run = async () => {
     // get authenticated GitHub client
     const github = new GitHub(process.env.GITHUB_TOKEN);
     core.setOutput('outP', github);
+    core.setOutput('out1', 111);
     console.log(github);
 
     // get onwer and repo
