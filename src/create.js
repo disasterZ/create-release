@@ -12,7 +12,8 @@ const run = async () => {
 
     // get params
     const tag = core.getInput('tag', { required: true });
-    const releaseName = core.getInput('release_name', { required: true });
+    const tagName = tag.replace('refs/tags/', '');
+    const releaseName = core.getInput('release_name', { required: true }).replace('refs/tags/', '');
     const body = core.getInput('body', { required: false });
     const draft = core.getInput('draft', { required: false }) === 'true';
     const prerelease = core.getInput('prerelease', { required: false }) === 'true';
@@ -24,7 +25,7 @@ const run = async () => {
     const createResponse = await github.repos.createRelease({
       owner,
       repo,
-      tag_name: tag,
+      tag_name: tagName,
       name: releaseName,
       body,
       draft,
