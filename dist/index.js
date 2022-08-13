@@ -8833,100 +8833,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 9954:
-/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-// ESM COMPAT FLAG
-__nccwpck_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(1238);
-var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5857);
-// EXTERNAL MODULE: ./node_modules/@octokit/core/dist-node/index.js
-var dist_node = __nccwpck_require__(8321);
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
-;// CONCATENATED MODULE: ./src/create.js
-
-
-
-
-
-const run = async () => {
-  try {
-    // // get authenticated GitHub client
-    // const github = new GitHub(process.env.GITHUB_TOKEN);
-
-    // get onwer and repo
-    const { owner: currentOwner, repo: currentRepo } = github.context.repo;
-
-    // get params
-    const tag = core_default().getInput('tag', { required: true });
-    const tagName = tag.replace('refs/tags/', '');
-    const releaseName = core_default().getInput('release_name', { required: true }).replace('refs/tags/', '');
-    const body = core_default().getInput('body', { required: false });
-    const draft = core_default().getInput('draft', { required: false }) === 'true';
-    const prerelease = core_default().getInput('prerelease', { required: false }) === 'true';
-    const commitish = core_default().getInput('commitish', { required: false }) || github.context.sha;
-
-    const owner = core_default().getInput('owner', { required: false }) || currentOwner;
-    const repo = core_default().getInput('repo', { required: false }) || currentRepo;
-
-    const octokit = new dist_node.Octokit({
-      auth: process.env.GITHUB_TOKEN
-    })
-
-    const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
-      owner,
-      repo,
-      tag_name: tagName,
-      name: releaseName,
-      body,
-      draft,
-      prerelease,
-      target_commitish: commitish
-    })
-
-    // const createResponse = await github.repos.createRelease({
-    //   owner,
-    //   repo,
-    //   tag_name: tagName,
-    //   name: releaseName,
-    //   body,
-    //   draft,
-    //   prerelease,
-    //   target_commitish: commitish
-    // })
-
-
-    // Get the ID, html_url, and upload URL for the created Release from the response
-    const {
-      data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }
-    } = createResponse;
-
-    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    core_default().setOutput('id', releaseId);
-    core_default().setOutput('html_url', htmlUrl);
-    core_default().setOutput('upload_url', uploadUrl)
-  } catch (error) {
-    core_default().setFailed(error.message);
-  }
-}
-
-/* harmony default export */ const create = (run);
-;// CONCATENATED MODULE: ./src/main.js
-/* module decorator */ module = __nccwpck_require__.hmd(module);
-
-
-if (__nccwpck_require__.c[__nccwpck_require__.s] === module) {
-  create();
-}
-
-/***/ }),
-
 /***/ 9878:
 /***/ ((module) => {
 
@@ -9069,8 +8975,8 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
@@ -9083,15 +8989,9 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
 /******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
-/******/ 	// expose the module cache
-/******/ 	__nccwpck_require__.c = __webpack_module_cache__;
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
@@ -9118,21 +9018,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -9154,12 +9039,96 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// module cache are used so entry inlining is disabled
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __nccwpck_require__(__nccwpck_require__.s = 9954);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+// ESM COMPAT FLAG
+__nccwpck_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(1238);
+var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5857);
+// EXTERNAL MODULE: ./node_modules/@octokit/core/dist-node/index.js
+var dist_node = __nccwpck_require__(8321);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
+;// CONCATENATED MODULE: ./src/create.js
+
+
+
+
+
+const run = async () => {
+  try {
+    // // get authenticated GitHub client
+    // const github = new GitHub(process.env.GITHUB_TOKEN);
+
+    // get onwer and repo
+    const { owner: currentOwner, repo: currentRepo } = github.context.repo;
+
+    // get params
+    const tag = core_default().getInput('tag', { required: true });
+    const tagName = tag.replace('refs/tags/', '');
+    const releaseName = core_default().getInput('release_name', { required: true }).replace('refs/tags/', '');
+    const body = core_default().getInput('body', { required: false });
+    const draft = core_default().getInput('draft', { required: false }) === 'true';
+    const prerelease = core_default().getInput('prerelease', { required: false }) === 'true';
+    const commitish = core_default().getInput('commitish', { required: false }) || github.context.sha;
+
+    const owner = core_default().getInput('owner', { required: false }) || currentOwner;
+    const repo = core_default().getInput('repo', { required: false }) || currentRepo;
+
+    const octokit = new dist_node.Octokit({
+      auth: process.env.GITHUB_TOKEN
+    })
+
+    const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
+      owner,
+      repo,
+      tag_name: tagName,
+      name: releaseName,
+      body,
+      draft,
+      prerelease,
+      target_commitish: commitish
+    })
+
+    // const createResponse = await github.repos.createRelease({
+    //   owner,
+    //   repo,
+    //   tag_name: tagName,
+    //   name: releaseName,
+    //   body,
+    //   draft,
+    //   prerelease,
+    //   target_commitish: commitish
+    // })
+
+
+    // Get the ID, html_url, and upload URL for the created Release from the response
+    const {
+      data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }
+    } = createResponse;
+
+    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+    core_default().setOutput('id', releaseId);
+    core_default().setOutput('html_url', htmlUrl);
+    core_default().setOutput('upload_url', uploadUrl)
+  } catch (error) {
+    core_default().setFailed(error.message);
+  }
+}
+
+/* harmony default export */ const create = (run);
+;// CONCATENATED MODULE: ./src/main.js
+
+
+create();
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
