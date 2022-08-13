@@ -2,7 +2,7 @@ name: 'Create a Release'
 description: 'Create a release for a tag in your repository'
 author: 'disasterZ'
 inputs:
-  tag_name:
+  tag:
     description: 'The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag'
     required: true
   release_name:
