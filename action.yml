@@ -1,6 +1,6 @@
 name: "Create a release"
 description: "Create release by auto"
-author: "DisasterZ"
+author: "disasterZ"
 inputs:
   tag:
     description: "The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag"
