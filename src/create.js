@@ -1,12 +1,13 @@
 import core from '@actions/core';
 import { GitHub, context } from '@actions/github';
+import { Octokit } from '@octokit/core';
 import fs from 'fs';
 
 const run = async () => {
   try {
-    // get authenticated GitHub client
-    const github = new GitHub(process.env.GITHUB_TOKEN);
-    console.log(github)
+    // // get authenticated GitHub client
+    // const github = new GitHub(process.env.GITHUB_TOKEN);
+
     // get onwer and repo
     const { owner: currentOwner, repo: currentRepo } = context.repo;
 
@@ -22,7 +23,11 @@ const run = async () => {
     const owner = core.getInput('owner', { required: false }) || currentOwner;
     const repo = core.getInput('repo', { required: false }) || currentRepo;
 
-    const createResponse = await github.repos.createRelease({
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_TOKEN
+    })
+
+    const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
       owner,
       repo,
       tag_name: tagName,
@@ -33,7 +38,17 @@ const run = async () => {
       target_commitish: commitish
     })
 
-    console.log(createResponse)
+    // const createResponse = await github.repos.createRelease({
+    //   owner,
+    //   repo,
+    //   tag_name: tagName,
+    //   name: releaseName,
+    //   body,
+    //   draft,
+    //   prerelease,
+    //   target_commitish: commitish
+    // })
+
 
     // Get the ID, html_url, and upload URL for the created Release from the response
     const {

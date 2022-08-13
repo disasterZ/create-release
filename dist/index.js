@@ -8844,7 +8844,9 @@ __nccwpck_require__.r(__webpack_exports__);
 var core = __nccwpck_require__(1238);
 var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var lib_github = __nccwpck_require__(5857);
+var github = __nccwpck_require__(5857);
+// EXTERNAL MODULE: ./node_modules/@octokit/core/dist-node/index.js
+var dist_node = __nccwpck_require__(8321);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/create.js
@@ -8852,13 +8854,14 @@ var external_fs_ = __nccwpck_require__(7147);
 
 
 
+
 const run = async () => {
   try {
-    // get authenticated GitHub client
-    const github = new lib_github.GitHub(process.env.GITHUB_TOKEN);
-    console.log(github)
+    // // get authenticated GitHub client
+    // const github = new GitHub(process.env.GITHUB_TOKEN);
+
     // get onwer and repo
-    const { owner: currentOwner, repo: currentRepo } = lib_github.context.repo;
+    const { owner: currentOwner, repo: currentRepo } = github.context.repo;
 
     // get params
     const tag = core_default().getInput('tag', { required: true });
@@ -8867,12 +8870,16 @@ const run = async () => {
     const body = core_default().getInput('body', { required: false });
     const draft = core_default().getInput('draft', { required: false }) === 'true';
     const prerelease = core_default().getInput('prerelease', { required: false }) === 'true';
-    const commitish = core_default().getInput('commitish', { required: false }) || lib_github.context.sha;
+    const commitish = core_default().getInput('commitish', { required: false }) || github.context.sha;
 
     const owner = core_default().getInput('owner', { required: false }) || currentOwner;
     const repo = core_default().getInput('repo', { required: false }) || currentRepo;
 
-    const createResponse = await github.repos.createRelease({
+    const octokit = new dist_node.Octokit({
+      auth: process.env.GITHUB_TOKEN
+    })
+
+    const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
       owner,
       repo,
       tag_name: tagName,
@@ -8883,7 +8890,17 @@ const run = async () => {
       target_commitish: commitish
     })
 
-    console.log(createResponse)
+    // const createResponse = await github.repos.createRelease({
+    //   owner,
+    //   repo,
+    //   tag_name: tagName,
+    //   name: releaseName,
+    //   body,
+    //   draft,
+    //   prerelease,
+    //   target_commitish: commitish
+    // })
+
 
     // Get the ID, html_url, and upload URL for the created Release from the response
     const {
