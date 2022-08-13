@@ -9053,10 +9053,7 @@ var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 var github = __nccwpck_require__(5857);
 // EXTERNAL MODULE: ./node_modules/@octokit/core/dist-node/index.js
 var dist_node = __nccwpck_require__(8321);
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/create.js
-
 
 
 
@@ -9068,6 +9065,8 @@ const run = async () => {
 
     // get onwer and repo
     const { owner: currentOwner, repo: currentRepo } = github.context.repo;
+    
+    console.log((core_default()))
 
     // get params
     const tag = core_default().getInput('tag', { required: true });

@@ -1,7 +1,6 @@
 import core from '@actions/core';
 import { GitHub, context } from '@actions/github';
 import { Octokit } from '@octokit/core';
-import fs from 'fs';
 
 const run = async () => {
   try {
@@ -10,6 +9,8 @@ const run = async () => {
 
     // get onwer and repo
     const { owner: currentOwner, repo: currentRepo } = context.repo;
+    
+    console.log(core)
 
     // get params
     const tag = core.getInput('tag', { required: true });
