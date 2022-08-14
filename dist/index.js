@@ -9057,14 +9057,13 @@ const run = async () => {
     })
     const currentRelease = releaseList.data;
     const releaseNameList = currentRelease.map(item => item.tag_name)
-    console.log(releaseNameList)
     if (releaseNameList.includes(tagName)) {
       console.log('Current tag is exist');
       return;
     }
     let prevTag = '', i = 0;
     while (!prevTag) {
-      if (releaseNameList[i].match(/^\d{3}$/g)) {
+      if (releaseNameList[i].match(/^\d{8}$/g)) {
         prevTag = releaseNameList[i];
       }
       i = i + 1;
@@ -9081,7 +9080,6 @@ const run = async () => {
     const changeNote = generateNote.body;
 
     const note = generateNotes(changeNote);
-    console.log(note)
 
     if(!note && !body) {
       return;
@@ -9131,7 +9129,7 @@ function generateNotes(content) {
 
         PRDetail = PRDetail.replace(`(${Product})`, '');
         PRDetail = PRDetail.split(':');
-        const currentNote = `#${PRNumber} ${PRDetail[1]}`;
+        const currentNote = `#${PRNumber} ${PRDetail[1] ? PRDetail[1] : PRDetail[0]}`;
         if (PRDetail[0].toUpperCase() === 'FIX') {
           const existNote = FixObj[Product] || [];
           FixObj[Product] = [...existNote, currentNote];
