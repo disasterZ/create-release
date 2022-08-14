@@ -9062,8 +9062,9 @@ const run = async () => {
       return;
     }
     let prevTag = '', i = 0;
+    console.log(releaseNameList)
     while (!prevTag) {
-      if (releaseNameList[i].match(/^\d{8}$/g)) {
+      if (releaseNameList[i] && releaseNameList[i].match(/^\d{8}$/g)) {
         prevTag = releaseNameList[i];
       }
       i = i + 1;
