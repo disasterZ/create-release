@@ -9074,12 +9074,17 @@ const run = async () => {
       }
     }
 
-    let generateNote = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
+    let generateNoteParam = {
       owner,
       repo,
       tag_name: tagName,
       target_commitish: commitish,
-      previous_tag_name: prevTag
+    }
+    if(prevTag) {
+      generateNoteParam['previous_tag_name'] = prevTag
+    }
+    let generateNote = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
+      ...generateNoteParam
     })
     generateNote = generateNote.data;
     const changeNote = generateNote.body;
