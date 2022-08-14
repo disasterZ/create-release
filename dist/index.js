@@ -9068,6 +9068,9 @@ const run = async () => {
         prevTag = releaseNameList[i];
       }
       i = i + 1;
+      if(i > releaseNameList.length) {
+        break;
+      }
     }
 
     let generateNote = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
