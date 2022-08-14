@@ -12,9 +12,16 @@ const run = async () => {
     const { owner: currentOwner, repo: currentRepo } = context.repo;
 
     // get params
-    const tag = core.getInput('tag', { required: true });
+    let tag = core.getInput('tag', { required: true });
+    if(process.env.TAG) {
+      tag = process.env.TAG
+    }
     const tagName = tag.replace('refs/tags/', '');
-    const releaseName = core.getInput('release_name', { required: true }).replace('refs/tags/', '');
+    let releaseName = core.getInput('release_name', { required: true });
+    if(process.env.RELEASE) {
+      releaseName = process.env.RELEASE
+    }
+    releaseName = releaseName.replace('refs/tags/', '');
     const body = core.getInput('body', { required: false });
     const draft = core.getInput('draft', { required: false }) === 'true';
     const prerelease = core.getInput('prerelease', { required: false }) === 'true';
@@ -35,6 +42,7 @@ const run = async () => {
     })
     const currentRelease = releaseList.data;
     const releaseNameList = currentRelease.map(item => item.tag_name)
+    console.log(releaseNameList)
     if (releaseNameList.includes(tagName)) {
       console.log('Current tag is exist');
       return;
@@ -65,6 +73,7 @@ const run = async () => {
     generateNote = generateNote.data;
     const changeNote = generateNote.body;
 
+    console.log(note)
     const note = generateNotes(changeNote);
 
     if(!note && !body) {
