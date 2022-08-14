@@ -59,7 +59,7 @@ const run = async () => {
     const note = generateNotes(changeNote);
     console.log(note)
 
-    if(!note || !body) {
+    if(!note && !body) {
       return;
     }
 
