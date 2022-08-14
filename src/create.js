@@ -33,10 +33,10 @@ const run = async () => {
     })
     const currentRelease = releaseList.data;
     const releaseNameList = currentRelease.map(item => item.tag_name)
-    if (releaseNameList.includes(tagName)) {
-      console.log('Current tag is exist');
-      return;
-    }
+    // if (releaseNameList.includes(tagName)) {
+    //   console.log('Current tag is exist');
+    //   return;
+    // }
 
     let generateNote = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
       owner,
