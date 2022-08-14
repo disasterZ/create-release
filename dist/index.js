@@ -8994,35 +8994,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -9048,7 +9019,6 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(1238);
-var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5857);
 // EXTERNAL MODULE: ./node_modules/@octokit/core/dist-node/index.js
@@ -9065,20 +9035,20 @@ const run = async () => {
 
     // get onwer and repo
     const { owner: currentOwner, repo: currentRepo } = github.context.repo;
-    
-    console.log((core_default()))
+
+    console.log(core.core)
 
     // get params
-    const tag = core_default().getInput('tag', { required: true });
+    const tag = core.core.getInput('tag', { required: true });
     const tagName = tag.replace('refs/tags/', '');
-    const releaseName = core_default().getInput('release_name', { required: true }).replace('refs/tags/', '');
-    const body = core_default().getInput('body', { required: false });
-    const draft = core_default().getInput('draft', { required: false }) === 'true';
-    const prerelease = core_default().getInput('prerelease', { required: false }) === 'true';
-    const commitish = core_default().getInput('commitish', { required: false }) || github.context.sha;
+    const releaseName = core.core.getInput('release_name', { required: true }).replace('refs/tags/', '');
+    const body = core.core.getInput('body', { required: false });
+    const draft = core.core.getInput('draft', { required: false }) === 'true';
+    const prerelease = core.core.getInput('prerelease', { required: false }) === 'true';
+    const commitish = core.core.getInput('commitish', { required: false }) || github.context.sha;
 
-    const owner = core_default().getInput('owner', { required: false }) || currentOwner;
-    const repo = core_default().getInput('repo', { required: false }) || currentRepo;
+    const owner = core.core.getInput('owner', { required: false }) || currentOwner;
+    const repo = core.core.getInput('repo', { required: false }) || currentRepo;
 
     const octokit = new dist_node.Octokit({
       auth: process.env.GITHUB_TOKEN
@@ -9113,11 +9083,11 @@ const run = async () => {
     } = createResponse;
 
     // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    core_default().setOutput('id', releaseId);
-    core_default().setOutput('html_url', htmlUrl);
-    core_default().setOutput('upload_url', uploadUrl)
+    core.core.setOutput('id', releaseId);
+    core.core.setOutput('html_url', htmlUrl);
+    core.core.setOutput('upload_url', uploadUrl)
   } catch (error) {
-    core_default().setFailed(error.message);
+    core.core.setFailed(error.message);
   }
 }
 
