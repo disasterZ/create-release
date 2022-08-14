@@ -29,8 +29,8 @@ const run = async () => {
 
     const owner = core.getInput('owner', { required: false }) || currentOwner;
     const repo = core.getInput('repo', { required: false }) || currentRepo;
-
-    console.log(tagName, releaseName)
+    console.log('Tag', tagName)
+    console.log('Release Title', releaseName)
 
     const octokit = new Octokit({
       auth: process.env.GITHUB_TOKEN
@@ -42,7 +42,6 @@ const run = async () => {
     })
     const currentRelease = releaseList.data;
     const releaseNameList = currentRelease.map(item => item.tag_name)
-    console.log(releaseNameList)
     if (releaseNameList.includes(tagName)) {
       console.log('Current tag is exist');
       return;
@@ -64,7 +63,7 @@ const run = async () => {
       tag_name: tagName,
       target_commitish: commitish,
     }
-    console.log(prevTag)
+
     if(prevTag) {
       generateNoteParam['previous_tag_name'] = prevTag
     }
@@ -76,7 +75,7 @@ const run = async () => {
 
 
     const note = generateNotes(changeNote);
-    console.log(note)
+    console.log("Note:", note)
 
     if(!note && !body) {
       return;
