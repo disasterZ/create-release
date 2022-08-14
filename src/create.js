@@ -39,8 +39,8 @@ const run = async () => {
       return;
     }
     let prevTag = '', i = 0;
-    while(!prevTag) {
-      if(releaseNameList[i].match(/^\d{3}$/g)) {
+    while (!prevTag) {
+      if (releaseNameList[i].match(/^\d{3}$/g)) {
         prevTag = releaseNameList[i];
       }
       i = i + 1;
@@ -55,39 +55,103 @@ const run = async () => {
     })
     generateNote = generateNote.data;
     const changeNote = generateNote.body;
-    console.log(changeNote)
 
-    // const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
-    //   owner,
-    //   repo,
-    //   tag_name: tagName,
-    //   name: releaseName,
-    //   body,
-    //   draft,
-    //   prerelease,
-    //   target_commitish: commitish
-    // })
+    const note = generateNotes(changeNote);
+    console.log(note)
+
+    if(!note || !body) {
+      return;
+    }
+
+    const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
+      owner,
+      repo,
+      tag_name: tagName,
+      name: releaseName,
+      body: body || note,
+      draft,
+      prerelease,
+      target_commitish: commitish
+    })
 
 
     // Get the ID, html_url, and upload URL for the created Release from the response
-    // const {
-    //   data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }
-    // } = createResponse;
+    const {
+      data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }
+    } = createResponse;
 
-    // // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    // core.setOutput('id', releaseId);
-    // core.setOutput('html_url', htmlUrl);
-    // core.setOutput('upload_url', uploadUrl)
+    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+    core.setOutput('id', releaseId);
+    core.setOutput('html_url', htmlUrl);
+    core.setOutput('upload_url', uploadUrl)
   } catch (error) {
     core.setFailed(error.message);
   }
 }
 
-// name: '333',
-// body: "## What's Changed\n" +
-//   '* 2022/01/01 --- Haojie --- Feat: Change (All) by @disasterZ in https://github.com/disasterZ/release-action-test/pull/3\n' +
-//   '\n' +
-//   '\n' +
-//   '**Full Changelog**: https://github.com/disasterZ/release-action-test/compare/111...333'
+function generateNotes(content) {
+  const notes = content.split('\n');
+  let changeLine = false, PRNumbers = [], FeatObj = {}, FixObj = {};
+  for (let line of notes) {
+    const _line = line.replace('\n', '');
+    if (changeLine && _line.match(/^\*/g)) {
+      const PR = _line.split(' --- ');
+      const PRLast = PR[PR.length - 1];
+      const PRNumber = PRLast.match(/[\d]$/g);
+      if (PRNumber && PRNumber[0]) {
+        PRNumbers.push(`#${PRNumber[0]}`);
+        let PRDetail = PRLast.split(' by ')[0];
+        PRDetail = PRDetail.replace(/ /g, '');
+        let Product = PRDetail.match(/\([A-Za-z]*\)$/g);
+        Product = Product && Product[0] ? Product[0].replace('\(', '').replace('\)', '') : 'All';
+
+        PRDetail = PRDetail.replace(`(${Product})`, '');
+        PRDetail = PRDetail.split(':');
+        const currentNote = `#${PRNumber} ${PRDetail[1]}`;
+        if (PRDetail[0].toUpperCase() === 'FIX') {
+          const existNote = FixObj[Product] || [];
+          FixObj[Product] = [...existNote, currentNote];
+        } else {
+          const existNote = FeatObj[Product] || [];
+          FeatObj[Product] = [...existNote, currentNote];
+        }
+      } else {
+        continue;
+      }
+    }
+
+    changeLine = _line === "## What's Changed" ? true : false;
+  }
+
+  let PRNote = [];
+  if(PRNumbers.length) {
+    PRNote.push('| PR |');
+    PRNote.push('| ----- |');
+    PRNote.push(`| ${PRNumbers.join(', ')} |`);
+    PRNote.push('');
+  }
+
+  const FeatProduct = Object.keys(FeatObj);
+  if(FeatProduct.length) {
+    PRNote.push('## New Feature and Major Enhancement');
+    FeatProduct.forEach(product => {
+      PRNote.push(`\`${product}\``);
+      PRNote.push(...FeatObj[product]);
+      PRNote.push('');
+    })
+  }
+
+  const FixProduct = Object.keys(FixObj);
+  if(FixProduct.length) {
+    PRNote.push('## New Feature and Major Enhancement');
+    FixProduct.forEach(product => {
+      PRNote.push(`\`${product}\``);
+      PRNote.push(...FixObj[product]);
+      PRNote.push('');
+    })
+  }
+
+  return PRNote.length ? PRNote.join('\n') : null;
+}
 
 export default run;
