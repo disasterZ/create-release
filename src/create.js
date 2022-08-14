@@ -31,22 +31,21 @@ const run = async () => {
       owner,
       repo
     })
-
     const currentRelease = releaseList.data;
-
     const releaseNameList = currentRelease.map(item => item.tag_name)
-    console.log(releaseNameList)
+    if (releaseNameList.includes(tagName)) {
+      console.log('Current tag is exist');
+      return;
+    }
 
-    let generateNote  = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
+    let generateNote = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
       owner,
       repo,
-      tag_name:tagName,
+      tag_name: tagName,
       target_commitish: commitish,
-      previous_tag_name: '111'
+      // previous_tag_name: '111'
     })
-
     generateNote = generateNote.data;
-
     const changeNote = generateNote.body;
     console.log(changeNote)
 
@@ -75,5 +74,12 @@ const run = async () => {
     core.setFailed(error.message);
   }
 }
+
+// name: '333',
+// body: "## What's Changed\n" +
+//   '* 2022/01/01 --- Haojie --- Feat: Change (All) by @disasterZ in https://github.com/disasterZ/release-action-test/pull/3\n' +
+//   '\n' +
+//   '\n' +
+//   '**Full Changelog**: https://github.com/disasterZ/release-action-test/compare/111...333'
 
 export default run;
