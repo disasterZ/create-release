@@ -9060,6 +9060,16 @@ const run = async () => {
 
     console.log(releaseList)
 
+    const generateNote  = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
+      owner,
+      repo,
+      tag_name:tagName,
+      target_commitish: commitish,
+      // previous_tag_name: 'v0.9.2'
+    })
+
+    console.log(generateNote)
+
     const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
       owner,
       repo,
