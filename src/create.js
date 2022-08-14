@@ -34,18 +34,21 @@ const run = async () => {
 
     const currentRelease = releaseList.data;
 
-    console.log(currentRelease)
+    const releaseNameList = currentRelease.map(item => item.tag_name)
+    console.log(releaseNameList)
 
     let generateNote  = await octokit.request('POST /repos/{owner}/{repo}/releases/generate-notes', {
       owner,
       repo,
       tag_name:tagName,
       target_commitish: commitish,
-      // previous_tag_name: 'v0.9.2'
+      previous_tag_name: '111'
     })
 
     generateNote = generateNote.data;
-    console.log(generateNote)
+
+    const changeNote = generateNote.body;
+    console.log(changeNote)
 
     // const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
     //   owner,
