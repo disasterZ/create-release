@@ -89,17 +89,21 @@ const run = async () => {
 
 function generateNotes(content) {
   const notes = content.split('\n');
+  console.log(notes);
   let changeLine = false, PRNumbers = [], FeatObj = {}, FixObj = {};
   for (let line of notes) {
     const _line = line.replace('\n', '');
+    console.log(_line, 1)
     if (changeLine && _line.match(/^\*/g)) {
       const PR = _line.split(' --- ');
       const PRLast = PR[PR.length - 1];
+      console.log(PRLast, 2)
       const PRNumber = PRLast.match(/[\d]$/g);
       if (PRNumber && PRNumber[0]) {
         PRNumbers.push(`#${PRNumber[0]}`);
         let PRDetail = PRLast.split(' by ')[0];
         PRDetail = PRDetail.replace(/ /g, '');
+        console.log(PRDetail, 3)
         let Product = PRDetail.match(/\([A-Za-z]*\)$/g);
         Product = Product && Product[0] ? Product[0].replace('\(', '').replace('\)', '') : 'All';
 
