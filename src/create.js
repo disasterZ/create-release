@@ -1,6 +1,7 @@
-import { core } from '@actions/core';
 import { GitHub, context } from '@actions/github';
 import { Octokit } from '@octokit/core';
+
+const core = require('@actions/core');
 
 const run = async () => {
   try {

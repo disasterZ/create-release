@@ -9017,8 +9017,6 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(1238);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5857);
 // EXTERNAL MODULE: ./node_modules/@octokit/core/dist-node/index.js
@@ -9027,6 +9025,7 @@ var dist_node = __nccwpck_require__(8321);
 
 
 
+const core = __nccwpck_require__(1238);
 
 const run = async () => {
   try {
@@ -9036,19 +9035,19 @@ const run = async () => {
     // get onwer and repo
     const { owner: currentOwner, repo: currentRepo } = github.context.repo;
 
-    console.log(core.core)
+    console.log(core)
 
     // get params
-    const tag = core.core.getInput('tag', { required: true });
+    const tag = core.getInput('tag', { required: true });
     const tagName = tag.replace('refs/tags/', '');
-    const releaseName = core.core.getInput('release_name', { required: true }).replace('refs/tags/', '');
-    const body = core.core.getInput('body', { required: false });
-    const draft = core.core.getInput('draft', { required: false }) === 'true';
-    const prerelease = core.core.getInput('prerelease', { required: false }) === 'true';
-    const commitish = core.core.getInput('commitish', { required: false }) || github.context.sha;
+    const releaseName = core.getInput('release_name', { required: true }).replace('refs/tags/', '');
+    const body = core.getInput('body', { required: false });
+    const draft = core.getInput('draft', { required: false }) === 'true';
+    const prerelease = core.getInput('prerelease', { required: false }) === 'true';
+    const commitish = core.getInput('commitish', { required: false }) || github.context.sha;
 
-    const owner = core.core.getInput('owner', { required: false }) || currentOwner;
-    const repo = core.core.getInput('repo', { required: false }) || currentRepo;
+    const owner = core.getInput('owner', { required: false }) || currentOwner;
+    const repo = core.getInput('repo', { required: false }) || currentRepo;
 
     const octokit = new dist_node.Octokit({
       auth: process.env.GITHUB_TOKEN
@@ -9083,11 +9082,11 @@ const run = async () => {
     } = createResponse;
 
     // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    core.core.setOutput('id', releaseId);
-    core.core.setOutput('html_url', htmlUrl);
-    core.core.setOutput('upload_url', uploadUrl)
+    core.setOutput('id', releaseId);
+    core.setOutput('html_url', htmlUrl);
+    core.setOutput('upload_url', uploadUrl)
   } catch (error) {
-    core.core.setFailed(error.message);
+    core.setFailed(error.message);
   }
 }
 
