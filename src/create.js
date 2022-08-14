@@ -64,6 +64,7 @@ const run = async () => {
       tag_name: tagName,
       target_commitish: commitish,
     }
+    console.log(prevTag)
     if(prevTag) {
       generateNoteParam['previous_tag_name'] = prevTag
     }
@@ -73,8 +74,9 @@ const run = async () => {
     generateNote = generateNote.data;
     const changeNote = generateNote.body;
 
-    console.log(note)
+
     const note = generateNotes(changeNote);
+    console.log(note)
 
     if(!note && !body) {
       return;
