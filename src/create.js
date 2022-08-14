@@ -1,4 +1,4 @@
-import { GitHub, context } from '@actions/github';
+import { context } from '@actions/github';
 import { Octokit } from '@octokit/core';
 
 const core = require('@actions/core');
@@ -28,6 +28,13 @@ const run = async () => {
     const octokit = new Octokit({
       auth: process.env.GITHUB_TOKEN
     })
+
+    const releaseList = await octokit.request('GET /repos/{owner}/{repo}/releases', {
+      owner,
+      repo
+    })
+
+    console.log(releaseList)
 
     const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
       owner,

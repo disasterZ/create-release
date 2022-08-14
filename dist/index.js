@@ -9053,6 +9053,13 @@ const run = async () => {
       auth: process.env.GITHUB_TOKEN
     })
 
+    const releaseList = await octokit.request('GET /repos/{owner}/{repo}/releases', {
+      owner,
+      repo
+    })
+
+    console.log(releaseList)
+
     const createResponse = await octokit.request(`POST /repos/{owner}/{repo}/releases`, {
       owner,
       repo,
