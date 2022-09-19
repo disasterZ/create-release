@@ -112,16 +112,18 @@ function generateNotes(content) {
   let changeLine = false, PRNumbers = [], FeatObj = {}, FixObj = {};
   for (let line of notes) {
     const _line = line.replace('\n', '');
+    if (_line.includes('**Full Changelog**')) {
+      changeLine = false
+    }
     if (changeLine && _line.match(/^\*/g)) {
       const PR = _line.split(' --- ');
       const PRLast = PR[PR.length - 1];
-      const PRNumber = PRLast.match(/[\d]$/g);
+      const PRNumber = PRLast.match(/\d{4}$/g);
       if (PRNumber && PRNumber[0]) {
         PRNumbers.push(`#${PRNumber[0]}`);
         let PRDetail = PRLast.split(' by ')[0];
-        PRDetail = PRDetail.replace(/ /g, '');
-        let Product = PRDetail.match(/\([A-Za-z]*\)$/g);
-        Product = Product && Product[0] ? Product[0].replace('\(', '').replace('\)', '') : 'All';
+        let Product = PRDetail.match(/\([A-Za-z]*\)\s*$/g);
+        Product = Product && Product[0] ? Product[0].replace('\(', '').replace('\)', '').replace(/\s*/g, '') : 'All';
 
         PRDetail = PRDetail.replace(`(${Product})`, '');
         PRDetail = PRDetail.split(':');
@@ -138,11 +140,13 @@ function generateNotes(content) {
       }
     }
 
-    changeLine = _line === "## What's Changed" ? true : false;
+    if(_line.includes("## What's Changed")) {
+      changeLine = true
+    }
   }
 
   let PRNote = [];
-  if(PRNumbers.length) {
+  if (PRNumbers.length) {
     PRNote.push('| PR |');
     PRNote.push('| ----- |');
     PRNote.push(`| ${PRNumbers.join(', ')} |`);
@@ -150,7 +154,7 @@ function generateNotes(content) {
   }
 
   const FeatProduct = Object.keys(FeatObj);
-  if(FeatProduct.length) {
+  if (FeatProduct.length) {
     PRNote.push('## New Feature and Major Enhancement');
     FeatProduct.forEach(product => {
       PRNote.push(`\`${product}\``);
@@ -160,8 +164,8 @@ function generateNotes(content) {
   }
 
   const FixProduct = Object.keys(FixObj);
-  if(FixProduct.length) {
-    PRNote.push('## New Feature and Major Enhancement');
+  if (FixProduct.length) {
+    PRNote.push('## Bug Fix and Minor Enhancement');
     FixProduct.forEach(product => {
       PRNote.push(`\`${product}\``);
       PRNote.push(...FixObj[product]);
